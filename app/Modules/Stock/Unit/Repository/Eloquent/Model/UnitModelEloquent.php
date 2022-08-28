@@ -1,0 +1,23 @@
+<?php
+
+namespace App\Modules\Stock\Unit\Repository\Eloquent\Model;
+
+use App\Shared\Repository\Eloquent\ModelEloquentBase;
+use App\Shared\Trait\UuidTrait;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+
+class UnitModelEloquent extends ModelEloquentBase
+{
+  use HasFactory, UuidTrait;
+
+  protected $table = 'unit';
+  protected $fillable = [
+    'abbreviation',
+    'description',
+    'created_by_user_id',
+    'updated_by_user_id',
+  ];
+  
+  protected $casts = [
+  ];
+}
