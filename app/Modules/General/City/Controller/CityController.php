@@ -21,6 +21,7 @@ class CityController extends Controller
   public function index()
   {
     $dataResult = new CityIndexResource($this->service->index());
+    
     return Res::success($dataResult);
   }
 
