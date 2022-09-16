@@ -17,7 +17,8 @@ class StorageLocationServiceProvider extends ServiceProvider
     public function register()
     {
         // Instanciar repositório
-        match (strtolower(env('DB_REPOSITORY', 'eloquent'))) {
+        $dbRepository = strtolower(env('DB_REPOSITORY', 'eloquent'));
+        match ($dbRepository) {
             'eloquent' => $this->app->bind(StorageLocationRepositoryInterface::class, fn () => new StorageLocationRepositoryEloquent(new StorageLocationModelEloquent())),
             'other'    => null,
         };        

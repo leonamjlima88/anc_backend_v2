@@ -14,15 +14,18 @@ use Illuminate\Http\Response;
 
 class CityController extends Controller
 {
+  protected CityService $service;
   public function __construct(private CityRepositoryInterface $repository){
     $this->service = CityService::make($this->repository);
   }
 
   public function index()
   {
+    $index    = $this->service->index();
+    $resource = new CityIndexResource($index);    
     $dataResult = new CityIndexResource($this->service->index());    
     
-    return Res::success($dataResult);
+    return Res::success($resource);
   }
 
   public function show(int $id)
@@ -36,7 +39,10 @@ class CityController extends Controller
 
   public function query(PageFilterDto $dto)
   {
-    $dataResult = new CityQueryResource($this->service->query($dto->toEntity()));
-    return Res::success($dataResult);
+    $entity   = $dto->toEntity();
+    $query    = $this->service->query($entity);
+    $resource = new CityQueryResource($query);
+
+    return Res::success($resource);
   }
 }

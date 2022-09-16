@@ -28,11 +28,13 @@ final class StorageLocationService extends ServiceBase
     }
 
     public function store(StorageLocationEntity $entity): StorageLocationEntity {
-        return $this->repository->store($entity);
+        $idStored = $this->repository->store($entity);
+        return $this->show($idStored);
     }
 
     public function update(StorageLocationEntity $entity, string $id): StorageLocationEntity {
-        return $this->repository->update($entity, $id);
+        $this->repository->update($entity, $id);
+        return $this->show($id);
     }
 
     /**

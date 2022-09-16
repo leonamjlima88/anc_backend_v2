@@ -28,11 +28,13 @@ final class UnitService extends ServiceBase
     }
 
     public function store(UnitEntity $entity): UnitEntity {
-        return $this->repository->store($entity);
+        $idStored = $this->repository->store($entity);
+        return $this->show($idStored);
     }
 
     public function update(UnitEntity $entity, string $id): UnitEntity {
-        return $this->repository->update($entity, $id);
+        $this->repository->update($entity, $id);
+        return $this->show($id);
     }
 
     /**

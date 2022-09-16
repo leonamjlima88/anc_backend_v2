@@ -28,11 +28,13 @@ final class BrandService extends ServiceBase
     }
 
     public function store(BrandEntity $entity): BrandEntity {
-        return $this->repository->store($entity);
+        $idStored = $this->repository->store($entity);
+        return $this->show($idStored);
     }
 
     public function update(BrandEntity $entity, string $id): BrandEntity {
-        return $this->repository->update($entity, $id);
+        $this->repository->update($entity, $id);
+        return $this->show($id);
     }
 
     /**

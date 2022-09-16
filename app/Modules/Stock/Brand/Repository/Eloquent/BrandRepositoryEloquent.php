@@ -26,5 +26,5 @@ class BrandRepositoryEloquent extends BaseRepositoryEloquent implements BrandRep
         $entityLoaded = BrandEntity::fromArray($dataToLoadEntity);
         
         return $entityLoaded;
-    }    
+    }        
 }

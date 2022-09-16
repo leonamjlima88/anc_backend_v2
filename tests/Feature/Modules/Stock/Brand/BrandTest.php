@@ -153,7 +153,7 @@ class BrandTest extends TestCase
                     'created_at',
                     'updated_at',
                     'created_by_user_id',
-                    'updated_by_user_id',
+                    'updated_by_user_id',                    
                 ]
             ],
         ];

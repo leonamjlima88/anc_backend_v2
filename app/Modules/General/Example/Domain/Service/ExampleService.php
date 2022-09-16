@@ -28,11 +28,13 @@ final class ExampleService extends ServiceBase
     }
 
     public function store(ExampleEntity $entity): ExampleEntity {
-        return $this->repository->store($entity);
+        $idStored = $this->repository->store($entity);
+        return $this->show($idStored);
     }
 
     public function update(ExampleEntity $entity, string $id): ExampleEntity {
-        return $this->repository->update($entity, $id);
+        $this->repository->update($entity, $id);
+        return $this->show($id);
     }
 
     /**

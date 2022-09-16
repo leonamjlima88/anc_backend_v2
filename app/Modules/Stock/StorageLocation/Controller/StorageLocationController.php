@@ -15,6 +15,7 @@ use Illuminate\Http\Response;
 
 class StorageLocationController extends Controller
 {
+  protected StorageLocationService $service;
   public function __construct(private StorageLocationRepositoryInterface $repository){
     $this->service = StorageLocationService::make($this->repository);
   }
@@ -28,8 +29,10 @@ class StorageLocationController extends Controller
 
   public function index()
   {
-    $dataResult = new StorageLocationIndexResource($this->service->index());
-    return Res::success($dataResult);
+    $index    = $this->service->index();
+    $resource = new StorageLocationIndexResource($index);
+    
+    return Res::success($resource);
   }
 
   public function show(string $id)
@@ -43,23 +46,28 @@ class StorageLocationController extends Controller
 
   public function store(StorageLocationDto $dto)
   {
-    $entityStored = $this->service->store($dto->toEntity());
-    $dataResult   = new StorageLocationShowResource($entityStored);
+    $entity       = $dto->toEntity();
+    $entityStored = $this->service->store($entity);
+    $resource     = new StorageLocationShowResource($entityStored);
     
-    return Res::success($dataResult, Response::HTTP_CREATED);
+    return Res::success($resource, Response::HTTP_CREATED);
   }
 
   public function update(StorageLocationDto $dto, string $id)
   {
-    $entityUpdated = $this->service->update($dto->toEntity(), $id);
-    $dataResult    = new StorageLocationShowResource($entityUpdated);
+    $entity        = $dto->toEntity();
+    $entityUpdated = $this->service->update($entity, $id);
+    $resource      = new StorageLocationShowResource($entityUpdated);
 
-    return Res::success($dataResult);
+    return Res::success($resource);
   }
 
   public function query(PageFilterDto $dto)
   {
-    $dataResult = new StorageLocationQueryResource($this->service->query($dto->toEntity()));
-    return Res::success($dataResult);
+    $entity   = $dto->toEntity();
+    $query    = $this->service->query($entity);
+    $resource = new StorageLocationQueryResource($query);
+    
+    return Res::success($resource);
   }
 }

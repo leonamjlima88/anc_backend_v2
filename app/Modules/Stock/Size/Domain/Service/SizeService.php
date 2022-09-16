@@ -28,11 +28,13 @@ final class SizeService extends ServiceBase
     }
 
     public function store(SizeEntity $entity): SizeEntity {
-        return $this->repository->store($entity);
+        $idStored = $this->repository->store($entity);
+        return $this->show($idStored);
     }
 
     public function update(SizeEntity $entity, string $id): SizeEntity {
-        return $this->repository->update($entity, $id);
+        $this->repository->update($entity, $id);
+        return $this->show($id);
     }
 
     /**

@@ -15,6 +15,7 @@ use Illuminate\Http\Response;
 
 class CategoryController extends Controller
 {
+  protected CategoryService $service;
   public function __construct(private CategoryRepositoryInterface $repository){
     $this->service = CategoryService::make($this->repository);
   }
@@ -28,8 +29,10 @@ class CategoryController extends Controller
 
   public function index()
   {
-    $dataResult = new CategoryIndexResource($this->service->index());
-    return Res::success($dataResult);
+    $index    = $this->service->index();
+    $resource = new CategoryIndexResource($index);
+    
+    return Res::success($resource);
   }
 
   public function show(string $id)
@@ -43,23 +46,28 @@ class CategoryController extends Controller
 
   public function store(CategoryDto $dto)
   {
-    $entityStored = $this->service->store($dto->toEntity());
-    $dataResult   = new CategoryShowResource($entityStored);
+    $entity       = $dto->toEntity();
+    $entityStored = $this->service->store($entity);
+    $resource     = new CategoryShowResource($entityStored);
     
-    return Res::success($dataResult, Response::HTTP_CREATED);
+    return Res::success($resource, Response::HTTP_CREATED);
   }
 
   public function update(CategoryDto $dto, string $id)
   {
-    $entityUpdated = $this->service->update($dto->toEntity(), $id);
-    $dataResult    = new CategoryShowResource($entityUpdated);
+    $entity        = $dto->toEntity();
+    $entityUpdated = $this->service->update($entity, $id);
+    $resource      = new CategoryShowResource($entityUpdated);
 
-    return Res::success($dataResult);
+    return Res::success($resource);
   }
 
   public function query(PageFilterDto $dto)
   {
-    $dataResult = new CategoryQueryResource($this->service->query($dto->toEntity()));
-    return Res::success($dataResult);
+    $entity   = $dto->toEntity();
+    $query    = $this->service->query($entity);
+    $resource = new CategoryQueryResource($query);
+    
+    return Res::success($resource);
   }
 }

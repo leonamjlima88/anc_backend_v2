@@ -14,14 +14,17 @@ use Illuminate\Http\Response;
 
 class StateController extends Controller
 {
+  protected StateService $service;
   public function __construct(private StateRepositoryInterface $repository){
     $this->service = StateService::make($this->repository);
   }
 
   public function index()
   {
-    $dataResult = new StateIndexResource($this->service->index());
-    return Res::success($dataResult);
+    $index    = $this->service->index();
+    $resource = new StateIndexResource($index);
+
+    return Res::success($resource);
   }
 
   public function show(int $id)
@@ -35,7 +38,10 @@ class StateController extends Controller
 
   public function query(PageFilterDto $dto)
   {
-    $dataResult = new StateQueryResource($this->service->query($dto->toEntity()));
-    return Res::success($dataResult);
+    $entity   = $dto->toEntity();
+    $query    = $this->service->query($entity);
+    $resource = new StateQueryResource($query);
+    
+    return Res::success($resource);
   }
 }

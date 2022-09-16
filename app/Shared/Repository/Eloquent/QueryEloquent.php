@@ -16,6 +16,13 @@ final class QueryEloquent
     $this->qry = $queryBuilder;    
   }
 
+  /**
+   * Instanciar classe
+   *
+   * @param PageFilterEntity $pageFilterEntity
+   * @param Builder $queryBuilder
+   * @return self
+   */
   public static function make(PageFilterEntity $pageFilterEntity, Builder $queryBuilder): self {
     return new self($pageFilterEntity, $queryBuilder);    
   }
