@@ -2,10 +2,10 @@
 
 namespace App\Modules\General\State\Repository\Eloquent\Model;
 
-use App\Shared\Repository\Eloquent\ModelEloquentBase;
+use App\Shared\Repository\Eloquent\BaseModelEloquent;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class StateModelEloquent extends ModelEloquentBase
+class StateModelEloquent extends BaseModelEloquent
 {
   use HasFactory;
 

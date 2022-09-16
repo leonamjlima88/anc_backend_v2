@@ -5,6 +5,7 @@ namespace App\Modules\General\City\Provider;
 use App\Modules\General\City\Repository\CityRepositoryInterface;
 use App\Modules\General\City\Repository\Eloquent\CityRepositoryEloquent;
 use App\Modules\General\City\Repository\Eloquent\Model\CityModelEloquent;
+use App\Shared\Repository\Enum\DbRepositoryEnum;
 use Illuminate\Support\ServiceProvider;
 
 class CityServiceProvider extends ServiceProvider
@@ -17,10 +18,10 @@ class CityServiceProvider extends ServiceProvider
     public function register()
     {
         // Instanciar repositório
-        $dbRepository = strtolower(env('DB_REPOSITORY', 'eloquent'));
+        $dbRepository = DbRepositoryEnum::from(env('DB_REPOSITORY', 'eloquent'));
         match ($dbRepository) {
-            'eloquent' => $this->app->bind(CityRepositoryInterface::class, fn () => new CityRepositoryEloquent(new CityModelEloquent())),
-            'other'    => null,
+            DbRepositoryEnum::ELOQUENT => $this->app->bind(CityRepositoryInterface::class, fn () => new CityRepositoryEloquent(new CityModelEloquent())),
+            DbRepositoryEnum::OTHER    => null,
         };        
     }
 

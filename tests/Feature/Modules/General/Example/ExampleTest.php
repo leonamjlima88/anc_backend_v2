@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Modules\General\Example\Repository\Eloquent\Model\ExampleModelEloquent;
+use Database\Factories\Modules\General\Example\Repository\ExampleFactoryProvider;
 use Tests\TestCase;
 
 class ExampleTest extends TestCase
@@ -22,7 +22,7 @@ class ExampleTest extends TestCase
      */
     public function testStoreExampleFromExampleController()
     {
-        $exampleToStore = ExampleModelEloquent::factory()->make()->toArray();
+        $exampleToStore = ExampleFactoryProvider::make()->generate();
         $response = $this->json(
             "POST",
             $this->uri,
@@ -58,10 +58,10 @@ class ExampleTest extends TestCase
      */
     public function testShowExampleFromExampleController()
     {
-        $exampleCreated = ExampleModelEloquent::factory()->create();
+        $exampleCreated = ExampleFactoryProvider::make()->create();
         $response = $this->json(
             "GET",
-            "{$this->uri}/{$exampleCreated->id}",            
+            "{$this->uri}/{$exampleCreated['id']}",            
         );
         $expectedResponse = [
             'code',
@@ -90,14 +90,14 @@ class ExampleTest extends TestCase
      */
     public function testUpdateExampleFromExampleController()
     {
-        $exampleToUpdate  = ExampleModelEloquent::factory()->create();
-        $exampleToUpdate->name = $this->faker->name();
+        $exampleToUpdate = ExampleFactoryProvider::make()->create();
+        $exampleToUpdate['name'] = $this->faker->name();
 
         $response = $this
             ->json(
                 "PUT",
-                "{$this->uri}/{$exampleToUpdate->id}", 
-                $exampleToUpdate->toArray(),
+                "{$this->uri}/{$exampleToUpdate['id']}", 
+                $exampleToUpdate,
             );
         $expectedResponse = [
             'code',
@@ -118,16 +118,16 @@ class ExampleTest extends TestCase
             ->assertStatus(200)
             ->assertJsonStructure($expectedResponse);
         $this->assertDatabaseHas('example', [
-            'id'          => $exampleToUpdate['id'],
-            'name'        => $exampleToUpdate['name'],
+            'id'   => $exampleToUpdate['id'],
+            'name' => $exampleToUpdate['name'],
         ]);                
     }
 
     public function testDestroyExampleFromExampleController()
     {
-        $exampleCreated  = ExampleModelEloquent::factory()->create();
+        $exampleCreated = ExampleFactoryProvider::make()->create();
         $response = $this->deleteJson(
-            "{$this->uri}/{$exampleCreated->id}"
+            "{$this->uri}/{$exampleCreated['id']}"
         );
 
         // Checar Status
@@ -136,7 +136,7 @@ class ExampleTest extends TestCase
 
     public function testIndexExampleFromExampleController()
     {
-        ExampleModelEloquent::factory(10)->create();
+        ExampleFactoryProvider::make()->create(15);
         $response = $this
             ->json(
                 "GET",
@@ -153,7 +153,7 @@ class ExampleTest extends TestCase
                     'created_at',
                     'updated_at',
                     'created_by_user_id',
-                    'updated_by_user_id',
+                    'updated_by_user_id',                    
                 ]
             ],
         ];

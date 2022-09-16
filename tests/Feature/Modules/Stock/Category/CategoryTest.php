@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Modules\Stock\Category\Repository\Eloquent\Model\CategoryModelEloquent;
+use Database\Factories\Modules\Stock\Category\Repository\CategoryFactoryProvider;
 use Tests\TestCase;
 
 class CategoryTest extends TestCase
@@ -22,7 +22,7 @@ class CategoryTest extends TestCase
      */
     public function testStoreCategoryFromCategoryController()
     {
-        $categoryToStore = CategoryModelEloquent::factory()->make()->toArray();
+        $categoryToStore = CategoryFactoryProvider::make()->generate();
         $response = $this->json(
             "POST",
             $this->uri,
@@ -58,10 +58,10 @@ class CategoryTest extends TestCase
      */
     public function testShowCategoryFromCategoryController()
     {
-        $categoryCreated = CategoryModelEloquent::factory()->create();
+        $categoryCreated = CategoryFactoryProvider::make()->create();
         $response = $this->json(
             "GET",
-            "{$this->uri}/{$categoryCreated->id}",            
+            "{$this->uri}/{$categoryCreated['id']}",            
         );
         $expectedResponse = [
             'code',
@@ -90,14 +90,14 @@ class CategoryTest extends TestCase
      */
     public function testUpdateCategoryFromCategoryController()
     {
-        $categoryToUpdate = CategoryModelEloquent::factory()->create();
-        $categoryToUpdate->name = $this->faker->name();
+        $categoryToUpdate = CategoryFactoryProvider::make()->create();
+        $categoryToUpdate['name'] = $this->faker->name();
 
         $response = $this
             ->json(
                 "PUT",
-                "{$this->uri}/{$categoryToUpdate->id}", 
-                $categoryToUpdate->toArray(),
+                "{$this->uri}/{$categoryToUpdate['id']}", 
+                $categoryToUpdate,
             );
         $expectedResponse = [
             'code',
@@ -118,16 +118,16 @@ class CategoryTest extends TestCase
             ->assertStatus(200)
             ->assertJsonStructure($expectedResponse);
         $this->assertDatabaseHas('category', [
-            'id'          => $categoryToUpdate['id'],
-            'name'        => $categoryToUpdate['name'],
+            'id'   => $categoryToUpdate['id'],
+            'name' => $categoryToUpdate['name'],
         ]);                
     }
 
     public function testDestroyCategoryFromCategoryController()
     {
-        $categoryCreated  = CategoryModelEloquent::factory()->create();
+        $categoryCreated = CategoryFactoryProvider::make()->create();
         $response = $this->deleteJson(
-            "{$this->uri}/{$categoryCreated->id}"
+            "{$this->uri}/{$categoryCreated['id']}"
         );
 
         // Checar Status
@@ -136,7 +136,7 @@ class CategoryTest extends TestCase
 
     public function testIndexCategoryFromCategoryController()
     {
-        CategoryModelEloquent::factory(10)->create();
+        CategoryFactoryProvider::make()->create(15);
         $response = $this
             ->json(
                 "GET",
@@ -153,7 +153,7 @@ class CategoryTest extends TestCase
                     'created_at',
                     'updated_at',
                     'created_by_user_id',
-                    'updated_by_user_id',
+                    'updated_by_user_id',                    
                 ]
             ],
         ];

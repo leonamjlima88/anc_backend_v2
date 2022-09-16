@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Modules\Stock\Unit\Repository\Eloquent\Model\UnitModelEloquent;
+use Database\Factories\Modules\Stock\Unit\Repository\UnitFactoryProvider;
 use Tests\TestCase;
 
 class UnitTest extends TestCase
@@ -22,7 +22,7 @@ class UnitTest extends TestCase
      */
     public function testStoreUnitFromUnitController()
     {
-        $unitToStore = UnitModelEloquent::factory()->make()->toArray();
+        $unitToStore = UnitFactoryProvider::make()->generate();
         $response = $this->json(
             "POST",
             $this->uri,
@@ -60,10 +60,10 @@ class UnitTest extends TestCase
      */
     public function testShowUnitFromUnitController()
     {
-        $unitCreated = UnitModelEloquent::factory()->create();
+        $unitCreated = UnitFactoryProvider::make()->create();
         $response = $this->json(
             "GET",
-            "{$this->uri}/{$unitCreated->id}",            
+            "{$this->uri}/{$unitCreated['id']}",            
         );
         $expectedResponse = [
             'code',
@@ -93,14 +93,14 @@ class UnitTest extends TestCase
      */
     public function testUpdateUnitFromUnitController()
     {
-        $unitToUpdate = UnitModelEloquent::factory()->create();
-        $unitToUpdate->name = $this->faker->name();
+        $unitToUpdate = UnitFactoryProvider::make()->create();
+        $unitToUpdate['name'] = $this->faker->name();
 
         $response = $this
             ->json(
                 "PUT",
-                "{$this->uri}/{$unitToUpdate->id}", 
-                $unitToUpdate->toArray(),
+                "{$this->uri}/{$unitToUpdate['id']}", 
+                $unitToUpdate,
             );
         $expectedResponse = [
             'code',
@@ -130,9 +130,9 @@ class UnitTest extends TestCase
 
     public function testDestroyUnitFromUnitController()
     {
-        $unitCreated  = UnitModelEloquent::factory()->create();
+        $unitCreated = UnitFactoryProvider::make()->create();
         $response = $this->deleteJson(
-            "{$this->uri}/{$unitCreated->id}"
+            "{$this->uri}/{$unitCreated['id']}"
         );
 
         // Checar Status
@@ -141,7 +141,7 @@ class UnitTest extends TestCase
 
     public function testIndexUnitFromUnitController()
     {
-        UnitModelEloquent::factory(10)->create();
+        UnitFactoryProvider::make()->create(10);
         $response = $this
             ->json(
                 "GET",

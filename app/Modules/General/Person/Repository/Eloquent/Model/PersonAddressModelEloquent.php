@@ -4,11 +4,11 @@ namespace App\Modules\General\Person\Repository\Eloquent\Model;
 
 use App\Modules\General\City\Repository\Eloquent\Model\CityModelEloquent;
 use App\Modules\General\Person\Enum\PersonAddressTypeEnum;
-use App\Shared\Repository\Eloquent\ModelEloquentBase;
+use App\Shared\Repository\Eloquent\BaseModelEloquent;
 use App\Shared\Trait\UuidTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class PersonAddressModelEloquent extends ModelEloquentBase
+class PersonAddressModelEloquent extends BaseModelEloquent
 {
   use HasFactory, UuidTrait;
 

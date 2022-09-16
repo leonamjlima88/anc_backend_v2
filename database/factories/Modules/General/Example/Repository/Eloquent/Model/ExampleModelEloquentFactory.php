@@ -3,7 +3,6 @@
 namespace Database\Factories\Modules\General\Example\Repository\Eloquent\Model;
 
 use App\Modules\General\Example\Repository\Eloquent\Model\ExampleModelEloquent;
-use App\Shared\Trait\UuidTrait;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ExampleModelEloquentFactory extends Factory

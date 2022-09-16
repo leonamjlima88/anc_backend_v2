@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Modules\General\Person\Repository\Eloquent\Model\PersonModelEloquent;
+use Database\Factories\Modules\General\Person\Repository\PersonFactoryProvider;
 use Tests\TestCase;
 
 class PersonTest extends TestCase
@@ -22,7 +22,7 @@ class PersonTest extends TestCase
      */
     public function testStorePersonFromPersonController()
     {
-        $personToStore = PersonModelEloquent::factory()->make()->toArray();
+        $personToStore = PersonFactoryProvider::make()->generate();
         $response = $this->json(
             "POST",
             $this->uri,
@@ -97,10 +97,10 @@ class PersonTest extends TestCase
      */
     public function testShowPersonFromPersonController()
     {
-        $personCreated = PersonModelEloquent::factory()->create();
+        $personCreated = PersonFactoryProvider::make()->create();
         $response = $this->json(
             "GET",
-            "{$this->uri}/{$personCreated->id}",            
+            "{$this->uri}/{$personCreated['id']}",            
         );
         $expectedResponse = [
             'code',
@@ -158,14 +158,14 @@ class PersonTest extends TestCase
      */
     public function testUpdatePersonFromPersonController()
     {
-        $personToUpdate = PersonModelEloquent::factory()->create();
-        $personToUpdate->name = $this->faker->name();
+        $personToUpdate = PersonFactoryProvider::make()->create();
+        $personToUpdate['name'] = $this->faker->name();
 
         $response = $this
             ->json(
                 "PUT",
-                "{$this->uri}/{$personToUpdate->id}", 
-                $personToUpdate->toArray(),
+                "{$this->uri}/{$personToUpdate['id']}", 
+                $personToUpdate,
             );
         $expectedResponse = [
             'code',
@@ -222,9 +222,9 @@ class PersonTest extends TestCase
 
     public function testDestroyPersonFromPersonController()
     {
-        $personCreated  = PersonModelEloquent::factory()->create();
+        $personCreated = PersonFactoryProvider::make()->create();
         $response = $this->deleteJson(
-            "{$this->uri}/{$personCreated->id}"
+            "{$this->uri}/{$personCreated['id']}"
         );
 
         // Checar Status
@@ -233,7 +233,7 @@ class PersonTest extends TestCase
 
     public function testIndexPersonFromPersonController()
     {
-        PersonModelEloquent::factory(10)->create();
+        PersonFactoryProvider::make()->create(15);
         $response = $this
             ->json(
                 "GET",

@@ -4,7 +4,6 @@ namespace Database\Factories\Modules\General\Person\Repository\Eloquent\Model;
 
 use App\Modules\General\City\Repository\Eloquent\Model\CityModelEloquent;
 use App\Modules\General\Person\Repository\Eloquent\Model\PersonModelEloquent;
-use App\Modules\General\State\Repository\Eloquent\Model\StateModelEloquent;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class PersonModelEloquentFactory extends Factory

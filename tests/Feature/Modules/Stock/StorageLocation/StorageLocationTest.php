@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Modules\Stock\StorageLocation\Repository\Eloquent\Model\StorageLocationModelEloquent;
+use Database\Factories\Modules\Stock\StorageLocation\Repository\StorageLocationFactoryProvider;
 use Tests\TestCase;
 
 class StorageLocationTest extends TestCase
@@ -22,7 +22,7 @@ class StorageLocationTest extends TestCase
      */
     public function testStoreStorageLocationFromStorageLocationController()
     {
-        $storageLocationToStore = StorageLocationModelEloquent::factory()->make()->toArray();
+        $storageLocationToStore = StorageLocationFactoryProvider::make()->generate();
         $response = $this->json(
             "POST",
             $this->uri,
@@ -58,10 +58,10 @@ class StorageLocationTest extends TestCase
      */
     public function testShowStorageLocationFromStorageLocationController()
     {
-        $storageLocationCreated = StorageLocationModelEloquent::factory()->create();
+        $storageLocationCreated = StorageLocationFactoryProvider::make()->create();
         $response = $this->json(
             "GET",
-            "{$this->uri}/{$storageLocationCreated->id}",            
+            "{$this->uri}/{$storageLocationCreated['id']}",            
         );
         $expectedResponse = [
             'code',
@@ -90,14 +90,14 @@ class StorageLocationTest extends TestCase
      */
     public function testUpdateStorageLocationFromStorageLocationController()
     {
-        $storageLocationToUpdate = StorageLocationModelEloquent::factory()->create();
-        $storageLocationToUpdate->name = $this->faker->name();
+        $storageLocationToUpdate = StorageLocationFactoryProvider::make()->create();
+        $storageLocationToUpdate['name'] = $this->faker->name();
 
         $response = $this
             ->json(
                 "PUT",
-                "{$this->uri}/{$storageLocationToUpdate->id}", 
-                $storageLocationToUpdate->toArray(),
+                "{$this->uri}/{$storageLocationToUpdate['id']}", 
+                $storageLocationToUpdate,
             );
         $expectedResponse = [
             'code',
@@ -118,16 +118,16 @@ class StorageLocationTest extends TestCase
             ->assertStatus(200)
             ->assertJsonStructure($expectedResponse);
         $this->assertDatabaseHas('storage_location', [
-            'id'          => $storageLocationToUpdate['id'],
-            'name'        => $storageLocationToUpdate['name'],
+            'id'   => $storageLocationToUpdate['id'],
+            'name' => $storageLocationToUpdate['name'],
         ]);                
     }
 
     public function testDestroyStorageLocationFromStorageLocationController()
     {
-        $storageLocationCreated  = StorageLocationModelEloquent::factory()->create();
+        $storageLocationCreated = StorageLocationFactoryProvider::make()->create();
         $response = $this->deleteJson(
-            "{$this->uri}/{$storageLocationCreated->id}"
+            "{$this->uri}/{$storageLocationCreated['id']}"
         );
 
         // Checar Status
@@ -136,7 +136,7 @@ class StorageLocationTest extends TestCase
 
     public function testIndexStorageLocationFromStorageLocationController()
     {
-        StorageLocationModelEloquent::factory(10)->create();
+        StorageLocationFactoryProvider::make()->create(10);
         $response = $this
             ->json(
                 "GET",

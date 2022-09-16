@@ -2,11 +2,11 @@
 
 namespace App\Modules\Stock\StorageLocation\Repository\Eloquent\Model;
 
-use App\Shared\Repository\Eloquent\ModelEloquentBase;
+use App\Shared\Repository\Eloquent\BaseModelEloquent;
 use App\Shared\Trait\UuidTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class StorageLocationModelEloquent extends ModelEloquentBase
+class StorageLocationModelEloquent extends BaseModelEloquent
 {
   use HasFactory, UuidTrait;
 

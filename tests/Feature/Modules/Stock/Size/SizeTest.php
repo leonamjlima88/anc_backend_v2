@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Modules\Stock\Size\Repository\Eloquent\Model\SizeModelEloquent;
+use Database\Factories\Modules\Stock\Size\Repository\SizeFactoryProvider;
 use Tests\TestCase;
 
 class SizeTest extends TestCase
@@ -22,7 +22,7 @@ class SizeTest extends TestCase
      */
     public function testStoreSizeFromSizeController()
     {
-        $sizeToStore = SizeModelEloquent::factory()->make()->toArray();
+        $sizeToStore = SizeFactoryProvider::make()->generate();
         $response = $this->json(
             "POST",
             $this->uri,
@@ -58,10 +58,10 @@ class SizeTest extends TestCase
      */
     public function testShowSizeFromSizeController()
     {
-        $sizeCreated = SizeModelEloquent::factory()->create();
+        $sizeCreated = SizeFactoryProvider::make()->create();
         $response = $this->json(
             "GET",
-            "{$this->uri}/{$sizeCreated->id}",            
+            "{$this->uri}/{$sizeCreated['id']}",            
         );
         $expectedResponse = [
             'code',
@@ -90,14 +90,14 @@ class SizeTest extends TestCase
      */
     public function testUpdateSizeFromSizeController()
     {
-        $sizeToUpdate = SizeModelEloquent::factory()->create();
-        $sizeToUpdate->name = $this->faker->name();
+        $sizeToUpdate = SizeFactoryProvider::make()->create();
+        $sizeToUpdate['name'] = $this->faker->name();
 
         $response = $this
             ->json(
                 "PUT",
-                "{$this->uri}/{$sizeToUpdate->id}", 
-                $sizeToUpdate->toArray(),
+                "{$this->uri}/{$sizeToUpdate['id']}", 
+                $sizeToUpdate,
             );
         $expectedResponse = [
             'code',
@@ -118,16 +118,16 @@ class SizeTest extends TestCase
             ->assertStatus(200)
             ->assertJsonStructure($expectedResponse);
         $this->assertDatabaseHas('size', [
-            'id'          => $sizeToUpdate['id'],
-            'name'        => $sizeToUpdate['name'],
+            'id'   => $sizeToUpdate['id'],
+            'name' => $sizeToUpdate['name'],
         ]);                
     }
 
     public function testDestroySizeFromSizeController()
     {
-        $sizeCreated  = SizeModelEloquent::factory()->create();
+        $sizeCreated = SizeFactoryProvider::make()->create();
         $response = $this->deleteJson(
-            "{$this->uri}/{$sizeCreated->id}"
+            "{$this->uri}/{$sizeCreated['id']}"
         );
 
         // Checar Status
@@ -136,7 +136,7 @@ class SizeTest extends TestCase
 
     public function testIndexSizeFromSizeController()
     {
-        SizeModelEloquent::factory(10)->create();
+        SizeFactoryProvider::make()->create(10);
         $response = $this
             ->json(
                 "GET",
