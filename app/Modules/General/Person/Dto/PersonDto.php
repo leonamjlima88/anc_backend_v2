@@ -172,7 +172,7 @@ class PersonDto extends Data
       }
 
       // PersonContact
-      $contacts = request()->get('person_contact') ?? [];
+      $contacts = request('person_contact', []);
       foreach ($contacts as $key => $value) {
         $fieldName = 'person_contact.' . $key . '.';
 

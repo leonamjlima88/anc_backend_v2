@@ -25,7 +25,7 @@ abstract class BaseRepositoryEloquent implements BaseRepositoryInterface
      * @param BaseEntity $entity
      * @return string $id
      */
-    public function store(BaseEntity $entity): string
+    public function store(BaseEntity $entity): string|int
     {
         // Método anônimo para incluir
         $dataToStore = $entity->toArray();        
@@ -71,7 +71,8 @@ abstract class BaseRepositoryEloquent implements BaseRepositoryInterface
         // Método anônimo para atualizar
         $dataToUpdate = $entity->toArray();
         $executeUpdate = function ($dataToUpdate) use ($modelFound) {
-            return $modelFound->update($dataToUpdate);
+            tap($modelFound)->update($dataToUpdate);
+            return true;
         };
 
         // Controle de Transação

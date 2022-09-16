@@ -8,8 +8,8 @@ use App\Modules\General\Person\Enum\PersonAddressTypeEnum;
 final class PersonAddressEntity
 {
   public function __construct(
-    public ?int $id,
-    public ?int $person_id,
+    public ?string $id,
+    public ?string $person_id,
     public PersonAddressTypeEnum|int|null $type,
     public ?string $zipcode,
     public string $address,

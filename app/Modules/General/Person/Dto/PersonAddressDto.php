@@ -15,11 +15,11 @@ class PersonAddressDto extends Data
   }  
 
   public function __construct(
-    #[Rule('nullable|integer')]
-    public ?int $id,
+    #[Rule('nullable|string|max:36')]
+    public ?string $id,
 
-    #[Rule('nullable|integer')]
-    public ?int $person_id,
+    #[Rule('nullable|string|max:36')]
+    public ?string $person_id,
 
     // Validação abaixo em rules()
     public PersonAddressTypeEnum|int|null $type,
