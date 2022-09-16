@@ -24,7 +24,7 @@ class PersonRepositoryEloquent extends BaseRepositoryEloquent implements PersonR
         parent::__construct($model);
     }  
     
-    public function store(BaseEntity $entity): BaseEntity {
+    public function store(BaseEntity $entity): string|int {
         // Método anônimo para incluir
         $dataToStore = $entity->toArray();
         $executeStore = function ($dataToStore) {
@@ -33,19 +33,17 @@ class PersonRepositoryEloquent extends BaseRepositoryEloquent implements PersonR
             $modelStored->personAddress()->createMany($dataToStore['person_address']);
             $modelStored->personContact()->createMany($dataToStore['person_contact']);
 
-            return $this->show($modelStored->id);
+            return $modelStored->id;
         };
 
         // Controle de Transação
-        $entityStored = match ($this->inTransaction) {
+        return match ($this->inTransaction) {
             true => DB::transaction(fn () => $executeStore($dataToStore)),
             false => $executeStore($dataToStore),
         };
-
-        return $entityStored;
     }
 
-    public function update(BaseEntity $entity, string|int $id): BaseEntity
+    public function update(BaseEntity $entity, string|int $id): bool
     {
         // Localizar Model
         $modelFound = $this->findById($id);
@@ -65,16 +63,14 @@ class PersonRepositoryEloquent extends BaseRepositoryEloquent implements PersonR
             $modelFound->personContact()->delete();
             $modelFound->personContact()->createMany($dataToUpdate['person_contact']);
         
-            return $this->show($modelFound->id);
+            return true;
         };
 
         // Controle de Transação
-        $entityUpdated = match ($this->inTransaction) {
+        return match ($this->inTransaction) {
             true => DB::transaction(fn () => $executeUpdate($dataToUpdate)),
             false => $executeUpdate($dataToUpdate),
         };
-
-        return $entityUpdated;
     }
 
     protected function findById(string|int $id): ?Model
