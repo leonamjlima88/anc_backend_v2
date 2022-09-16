@@ -23,7 +23,6 @@ class CityController extends Controller
   {
     $index    = $this->service->index();
     $resource = new CityIndexResource($index);    
-    $dataResult = new CityIndexResource($this->service->index());    
     
     return Res::success($resource);
   }
