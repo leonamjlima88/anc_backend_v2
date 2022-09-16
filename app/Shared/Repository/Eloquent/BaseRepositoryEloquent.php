@@ -19,24 +19,35 @@ abstract class BaseRepositoryEloquent implements BaseRepositoryInterface
         return $this->model->get()->toArray();
     }
 
-    public function store(BaseEntity $entity): BaseEntity {
+    /**
+     * Incluir
+     *
+     * @param BaseEntity $entity
+     * @return string $id
+     */
+    public function store(BaseEntity $entity): string
+    {
         // Método anônimo para incluir
-        $dataToStore = $entity->toArray();
+        $dataToStore = $entity->toArray();        
         $executeStore = function ($dataToStore) {
             $modelStored = $this->model->create($dataToStore);
 
-            return $this->show($modelStored->id);
+            return $modelStored->id;
         };
 
         // Controle de Transação
-        $entityStored = match ($this->inTransaction) {
+        return match ($this->inTransaction) {
             true => DB::transaction(fn () => $executeStore($dataToStore)),
             false => $executeStore($dataToStore),
         };
-
-        return $entityStored;
     }
 
+    /**
+     * Localizar por ID
+     *
+     * @param string|integer $id
+     * @return BaseEntity|null $entity
+     */
     public function show(string|int $id): ?BaseEntity
     {
         return ($modelFound = $this->findById($id))
@@ -44,7 +55,14 @@ abstract class BaseRepositoryEloquent implements BaseRepositoryInterface
           : null;        
     }
 
-    public function update(BaseEntity $entity, string|int $id): BaseEntity
+    /**
+     * Atualizar
+     *
+     * @param BaseEntity $entity
+     * @param string|integer $id
+     * @return boolean $itWorked
+     */
+    public function update(BaseEntity $entity, string|int $id): bool
     {
         // Localizar Model
         $modelFound = $this->findById($id);
@@ -53,21 +71,22 @@ abstract class BaseRepositoryEloquent implements BaseRepositoryInterface
         // Método anônimo para atualizar
         $dataToUpdate = $entity->toArray();
         $executeUpdate = function ($dataToUpdate) use ($modelFound) {
-            // Atualizar Example
-            tap($modelFound)->update($dataToUpdate);
-        
-            return $this->show($modelFound->id);
+            return $modelFound->update($dataToUpdate);
         };
 
         // Controle de Transação
-        $entityUpdated = match ($this->inTransaction) {
+        return match ($this->inTransaction) {
             true => DB::transaction(fn () => $executeUpdate($dataToUpdate)),
             false => $executeUpdate($dataToUpdate),
         };
-
-        return $entityUpdated;
     }
 
+    /**
+     * Localizar por ID e retornar Model
+     *
+     * @param string|integer $id
+     * @return Model|null $model
+     */
     protected function findById(string|int $id): ?Model
     {
         return $this->model
@@ -75,6 +94,12 @@ abstract class BaseRepositoryEloquent implements BaseRepositoryInterface
             ->first();
     }
 
+    /**
+     * Deletar
+     *
+     * @param string|integer $id
+     * @return boolean $itWorked
+     */
     public function destroy(string|int $id): bool
     {
         return ($modelFound = $this->model->find($id)) 
@@ -86,16 +111,14 @@ abstract class BaseRepositoryEloquent implements BaseRepositoryInterface
      * Filtragem de dados
      *
      * @param PageFilterEntity $pageFilterEntity
-     * @return array
+     * @return array $result
      */
     public function query(PageFilterEntity $pageFilterEntity): array
     {
         // QueryBuilder Base
         $queryBuilder = $this->model
             ->query()
-            ->select(
-                $this->model->getTable().'.*',
-            )
+            ->select($this->model->getTable().'.*')
             ->orderBy($this->model->getTable().'.id');
 
         return QueryEloquent::make($pageFilterEntity, $queryBuilder)->execute();
@@ -106,7 +129,7 @@ abstract class BaseRepositoryEloquent implements BaseRepositoryInterface
      * Habilitar/Desabilitar Transação de Dados
      *
      * @param boolean $value
-     * @return self
+     * @return self $this
      */
     public function setTransaction(bool $value): self {
         $this->inTransaction = $value;

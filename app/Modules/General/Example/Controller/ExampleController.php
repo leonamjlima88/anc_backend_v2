@@ -15,6 +15,7 @@ use Illuminate\Http\Response;
 
 class ExampleController extends Controller
 {
+  protected ExampleService $service;
   public function __construct(private ExampleRepositoryInterface $repository){
     $this->service = ExampleService::make($this->repository);
   }
@@ -28,8 +29,10 @@ class ExampleController extends Controller
 
   public function index()
   {
-    $dataResult = new ExampleIndexResource($this->service->index());
-    return Res::success($dataResult);
+    $index    = $this->service->index();
+    $resource = new ExampleIndexResource($index);
+    
+    return Res::success($resource);
   }
 
   public function show(string $id)
@@ -43,23 +46,28 @@ class ExampleController extends Controller
 
   public function store(ExampleDto $dto)
   {
-    $entityStored = $this->service->store($dto->toEntity());
-    $dataResult   = new ExampleShowResource($entityStored);
+    $entity       = $dto->toEntity();
+    $entityStored = $this->service->store($entity);
+    $resource     = new ExampleShowResource($entityStored);
     
-    return Res::success($dataResult, Response::HTTP_CREATED);
+    return Res::success($resource, Response::HTTP_CREATED);
   }
 
   public function update(ExampleDto $dto, string $id)
   {
-    $entityUpdated = $this->service->update($dto->toEntity(), $id);
-    $dataResult    = new ExampleShowResource($entityUpdated);
+    $entity        = $dto->toEntity();
+    $entityUpdated = $this->service->update($entity, $id);
+    $resource      = new ExampleShowResource($entityUpdated);
 
-    return Res::success($dataResult);
+    return Res::success($resource);
   }
 
   public function query(PageFilterDto $dto)
   {
-    $dataResult = new ExampleQueryResource($this->service->query($dto->toEntity()));
-    return Res::success($dataResult);
+    $entity   = $dto->toEntity();
+    $query    = $this->service->query($entity);
+    $resource = new ExampleQueryResource($query);
+    
+    return Res::success($resource);
   }
 }

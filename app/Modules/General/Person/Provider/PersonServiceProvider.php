@@ -17,7 +17,8 @@ class PersonServiceProvider extends ServiceProvider
     public function register()
     {
         // Instanciar repositório
-        match (strtolower(env('DB_REPOSITORY', 'eloquent'))) {
+        $dbRepository = strtolower(env('DB_REPOSITORY', 'eloquent'));
+        match ($dbRepository) {
             'eloquent' => $this->app->bind(PersonRepositoryInterface::class, fn () => new PersonRepositoryEloquent(new PersonModelEloquent())),
             'other'    => null,
         };   

@@ -15,6 +15,7 @@ use Illuminate\Http\Response;
 
 class PersonController extends Controller
 {
+  protected PersonService $service;
   public function __construct(private PersonRepositoryInterface $repository){
     $this->service = PersonService::make($this->repository);
   }
@@ -28,8 +29,10 @@ class PersonController extends Controller
 
   public function index()
   {
-    $dataResult = new PersonIndexResource($this->service->index());
-    return Res::success($dataResult);
+    $index    = $this->service->index();
+    $resource = new PersonIndexResource($index);
+
+    return Res::success($resource);
   }
 
   public function show(string $id)
@@ -43,23 +46,28 @@ class PersonController extends Controller
 
   public function store(PersonDto $dto)
   {
-    $entityStored = $this->service->store($dto->toEntity());
-    $dataResult   = new PersonShowResource($entityStored);
+    $entity       = $dto->toEntity();
+    $entityStored = $this->service->store($entity);
+    $resource     = new PersonShowResource($entityStored);
     
-    return Res::success($dataResult, Response::HTTP_CREATED);
+    return Res::success($resource, Response::HTTP_CREATED);
   }
 
   public function update(PersonDto $dto, string $id)
   {
-    $entityUpdated = $this->service->update($dto->toEntity(), $id);
-    $dataResult    = new PersonShowResource($entityUpdated);
+    $entity        = $dto->toEntity();
+    $entityUpdated = $this->service->update($entity, $id);
+    $resource      = new PersonShowResource($entityUpdated);
 
-    return Res::success($dataResult);
+    return Res::success($resource);
   }
 
   public function query(PageFilterDto $dto)
   {
-    $dataResult = new PersonQueryResource($this->service->query($dto->toEntity()));
-    return Res::success($dataResult);
+    $entity   = $dto->toEntity();
+    $query    = $this->service->query($entity);
+    $resource = new PersonQueryResource($query);
+
+    return Res::success($resource);
   }
 }

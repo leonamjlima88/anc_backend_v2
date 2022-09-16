@@ -28,11 +28,13 @@ final class CategoryService extends ServiceBase
     }
 
     public function store(CategoryEntity $entity): CategoryEntity {
-        return $this->repository->store($entity);
+        $idStored = $this->repository->store($entity);
+        return $this->show($idStored);
     }
 
     public function update(CategoryEntity $entity, string $id): CategoryEntity {
-        return $this->repository->update($entity, $id);
+        $this->repository->update($entity, $id);
+        return $this->show($id);
     }
 
     /**

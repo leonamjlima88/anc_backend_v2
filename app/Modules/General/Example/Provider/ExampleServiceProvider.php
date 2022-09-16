@@ -17,7 +17,8 @@ class ExampleServiceProvider extends ServiceProvider
     public function register()
     {
         // Instanciar repositório
-        match (strtolower(env('DB_REPOSITORY', 'eloquent'))) {
+        $dbRepository = strtolower(env('DB_REPOSITORY', 'eloquent'));
+        match ($dbRepository) {
             'eloquent' => $this->app->bind(ExampleRepositoryInterface::class, fn () => new ExampleRepositoryEloquent(new ExampleModelEloquent())),
             'other'    => null,
         };        

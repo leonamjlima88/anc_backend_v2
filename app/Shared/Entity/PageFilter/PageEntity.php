@@ -9,7 +9,7 @@ final class PageEntity
   public function __construct(
     public ?bool $isPaginate = true,
     public ?int $limit = 15,
-    public ?int $current = 0,
+    public ?int $current = 1,
     public ?array $columns = null,
   ) {
   }

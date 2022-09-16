@@ -15,6 +15,7 @@ use Illuminate\Http\Response;
 
 class UnitController extends Controller
 {
+  protected UnitService $service;
   public function __construct(private UnitRepositoryInterface $repository){
     $this->service = UnitService::make($this->repository);
   }
@@ -28,8 +29,10 @@ class UnitController extends Controller
 
   public function index()
   {
-    $dataResult = new UnitIndexResource($this->service->index());
-    return Res::success($dataResult);
+    $index    = $this->service->index();
+    $resource = new UnitIndexResource($index);
+    
+    return Res::success($resource);
   }
 
   public function show(string $id)
@@ -37,29 +40,34 @@ class UnitController extends Controller
     $entityFound = $this->service->show($id);
 
     return ($entityFound)
-      ? Res::success (new UnitShowResource($entityFound))
+      ? Res::success ( new UnitShowResource($entityFound))
       : Res::error   (code: Response::HTTP_NOT_FOUND);
   }
 
   public function store(UnitDto $dto)
   {
-    $entityStored = $this->service->store($dto->toEntity());
-    $dataResult   = new UnitShowResource($entityStored);
+    $entity       = $dto->toEntity();
+    $entityStored = $this->service->store($entity);
+    $resource     = new UnitShowResource($entityStored);
     
-    return Res::success($dataResult, Response::HTTP_CREATED);
+    return Res::success($resource, Response::HTTP_CREATED);
   }
 
   public function update(UnitDto $dto, string $id)
   {
-    $entityUpdated = $this->service->update($dto->toEntity(), $id);
-    $dataResult    = new UnitShowResource($entityUpdated);
+    $entity        = $dto->toEntity();
+    $entityUpdated = $this->service->update($entity, $id);
+    $resource      = new UnitShowResource($entityUpdated);
 
-    return Res::success($dataResult);
+    return Res::success($resource);
   }
 
   public function query(PageFilterDto $dto)
   {
-    $dataResult = new UnitQueryResource($this->service->query($dto->toEntity()));
-    return Res::success($dataResult);
+    $entity   = $dto->toEntity();
+    $query    = $this->service->query($entity);
+    $resource = new UnitQueryResource($query);
+    
+    return Res::success($resource);
   }
 }

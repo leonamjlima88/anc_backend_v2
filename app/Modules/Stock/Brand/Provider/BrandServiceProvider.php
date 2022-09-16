@@ -17,11 +17,11 @@ class BrandServiceProvider extends ServiceProvider
     public function register()
     {
         // Instanciar repositório
-        match (strtolower(env('DB_REPOSITORY', 'eloquent'))) {
+        $dbRepository = strtolower(env('DB_REPOSITORY', 'eloquent'));
+        match ($dbRepository) {
             'eloquent' => $this->app->bind(BrandRepositoryInterface::class, fn () => new BrandRepositoryEloquent(new BrandModelEloquent())),
             'other'    => null,
         };        
-        
     }
 
     /**

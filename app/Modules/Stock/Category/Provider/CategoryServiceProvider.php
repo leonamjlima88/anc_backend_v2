@@ -17,7 +17,8 @@ class CategoryServiceProvider extends ServiceProvider
     public function register()
     {
         // Instanciar repositório
-        match (strtolower(env('DB_REPOSITORY', 'eloquent'))) {
+        $dbRepository = strtolower(env('DB_REPOSITORY', 'eloquent'));
+        match ($dbRepository) {
             'eloquent' => $this->app->bind(CategoryRepositoryInterface::class, fn () => new CategoryRepositoryEloquent(new CategoryModelEloquent())),
             'other'    => null,
         };        

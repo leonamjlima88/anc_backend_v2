@@ -29,14 +29,16 @@ final class PersonService extends ServiceBase
 
     public function store(PersonEntity $entity): PersonEntity {
         PersonBeforeSaveService::make()->execute($entity);
+        $idStored = $this->repository->store($entity);
 
-        return $this->repository->store($entity);
+        return $this->show($idStored);
     }
 
     public function update(PersonEntity $entity, string $id): PersonEntity {
-        PersonBeforeSaveService::make()->execute($entity);
-        
-        return $this->repository->update($entity, $id);
+        PersonBeforeSaveService::make()->execute($entity);        
+        $this->repository->update($entity, $id);
+
+        return $this->show($id);
     }
 
     /**

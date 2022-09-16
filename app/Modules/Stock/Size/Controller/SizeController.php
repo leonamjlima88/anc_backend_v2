@@ -15,6 +15,7 @@ use Illuminate\Http\Response;
 
 class SizeController extends Controller
 {
+  protected SizeService $service;
   public function __construct(private SizeRepositoryInterface $repository){
     $this->service = SizeService::make($this->repository);
   }
@@ -28,8 +29,10 @@ class SizeController extends Controller
 
   public function index()
   {
-    $dataResult = new SizeIndexResource($this->service->index());
-    return Res::success($dataResult);
+    $index    = $this->service->index();
+    $resource = new SizeIndexResource($index);
+    
+    return Res::success($resource);
   }
 
   public function show(string $id)
@@ -43,23 +46,28 @@ class SizeController extends Controller
 
   public function store(SizeDto $dto)
   {
-    $entityStored = $this->service->store($dto->toEntity());
-    $dataResult   = new SizeShowResource($entityStored);
+    $entity       = $dto->toEntity();
+    $entityStored = $this->service->store($entity);
+    $resource     = new SizeShowResource($entityStored);
     
-    return Res::success($dataResult, Response::HTTP_CREATED);
+    return Res::success($resource, Response::HTTP_CREATED);
   }
 
   public function update(SizeDto $dto, string $id)
   {
-    $entityUpdated = $this->service->update($dto->toEntity(), $id);
-    $dataResult    = new SizeShowResource($entityUpdated);
+    $entity        = $dto->toEntity();
+    $entityUpdated = $this->service->update($entity, $id);
+    $resource      = new SizeShowResource($entityUpdated);
 
-    return Res::success($dataResult);
+    return Res::success($resource);
   }
 
   public function query(PageFilterDto $dto)
   {
-    $dataResult = new SizeQueryResource($this->service->query($dto->toEntity()));
-    return Res::success($dataResult);
+    $entity   = $dto->toEntity();
+    $query    = $this->service->query($entity);
+    $resource = new SizeQueryResource($query);
+    
+    return Res::success($resource);
   }
 }

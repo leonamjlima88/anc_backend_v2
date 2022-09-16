@@ -15,6 +15,7 @@ use Illuminate\Http\Response;
 
 class BrandController extends Controller
 {
+  protected BrandService $service;
   public function __construct(private BrandRepositoryInterface $repository){
     $this->service = BrandService::make($this->repository);
   }
@@ -28,8 +29,10 @@ class BrandController extends Controller
 
   public function index()
   {
-    $dataResult = new BrandIndexResource($this->service->index());
-    return Res::success($dataResult);
+    $index    = $this->service->index();
+    $resource = new BrandIndexResource($index);
+    
+    return Res::success($resource);
   }
 
   public function show(string $id)
@@ -43,23 +46,28 @@ class BrandController extends Controller
 
   public function store(BrandDto $dto)
   {
-    $entityStored = $this->service->store($dto->toEntity());
-    $dataResult   = new BrandShowResource($entityStored);
+    $entity       = $dto->toEntity();
+    $entityStored = $this->service->store($entity);
+    $resource     = new BrandShowResource($entityStored);
     
-    return Res::success($dataResult, Response::HTTP_CREATED);
+    return Res::success($resource, Response::HTTP_CREATED);
   }
 
   public function update(BrandDto $dto, string $id)
   {
-    $entityUpdated = $this->service->update($dto->toEntity(), $id);
-    $dataResult    = new BrandShowResource($entityUpdated);
+    $entity        = $dto->toEntity();
+    $entityUpdated = $this->service->update($entity, $id);
+    $resource      = new BrandShowResource($entityUpdated);
 
-    return Res::success($dataResult);
+    return Res::success($resource);
   }
 
   public function query(PageFilterDto $dto)
   {
-    $dataResult = new BrandQueryResource($this->service->query($dto->toEntity()));
-    return Res::success($dataResult);
+    $entity   = $dto->toEntity();
+    $query    = $this->service->query($entity);
+    $resource = new BrandQueryResource($query);
+    
+    return Res::success($resource);
   }
 }
