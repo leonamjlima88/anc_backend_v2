@@ -22,7 +22,8 @@ class UnitModelEloquentFactory extends Factory
   public function definition()
   {
     return [
-      'name' => $this->faker->name(),
+      'abbreviation' => $this->faker->asciify('**'),
+      'description' => $this->faker->text(20),
     ];
   }
 }
