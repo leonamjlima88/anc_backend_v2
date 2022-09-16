@@ -19,11 +19,11 @@ class CityRepositoryEloquent extends BaseRepositoryEloquent implements CityRepos
         parent::__construct($model);
     }  
     
-    public function store(BaseEntity $entity): BaseEntity {
+    public function store(BaseEntity $entity): string|int {
         throw new Exception("This method has not been implemented!");
     }
 
-    public function update(BaseEntity $entity, string|int $id): BaseEntity {
+    public function update(BaseEntity $entity, string|int $id): bool {
         throw new Exception("This method has not been implemented!");
     }
 
