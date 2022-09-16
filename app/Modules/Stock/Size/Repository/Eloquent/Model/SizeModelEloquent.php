@@ -2,11 +2,11 @@
 
 namespace App\Modules\Stock\Size\Repository\Eloquent\Model;
 
-use App\Shared\Repository\Eloquent\ModelEloquentBase;
+use App\Shared\Repository\Eloquent\BaseModelEloquent;
 use App\Shared\Trait\UuidTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class SizeModelEloquent extends ModelEloquentBase
+class SizeModelEloquent extends BaseModelEloquent
 {
   use HasFactory, UuidTrait;
 

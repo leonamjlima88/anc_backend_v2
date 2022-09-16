@@ -3,10 +3,10 @@
 namespace App\Modules\General\City\Repository\Eloquent\Model;
 
 use App\Modules\General\State\Repository\Eloquent\Model\StateModelEloquent;
-use App\Shared\Repository\Eloquent\ModelEloquentBase;
+use App\Shared\Repository\Eloquent\BaseModelEloquent;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class CityModelEloquent extends ModelEloquentBase
+class CityModelEloquent extends BaseModelEloquent
 {
   use HasFactory;
 

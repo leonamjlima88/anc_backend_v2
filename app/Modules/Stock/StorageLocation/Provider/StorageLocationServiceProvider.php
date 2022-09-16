@@ -5,6 +5,7 @@ namespace App\Modules\Stock\StorageLocation\Provider;
 use App\Modules\Stock\StorageLocation\Repository\Eloquent\Model\StorageLocationModelEloquent;
 use App\Modules\Stock\StorageLocation\Repository\Eloquent\StorageLocationRepositoryEloquent;
 use App\Modules\Stock\StorageLocation\Repository\StorageLocationRepositoryInterface;
+use App\Shared\Repository\Enum\DbRepositoryEnum;
 use Illuminate\Support\ServiceProvider;
 
 class StorageLocationServiceProvider extends ServiceProvider
@@ -17,12 +18,11 @@ class StorageLocationServiceProvider extends ServiceProvider
     public function register()
     {
         // Instanciar repositório
-        $dbRepository = strtolower(env('DB_REPOSITORY', 'eloquent'));
+        $dbRepository = DbRepositoryEnum::from(env('DB_REPOSITORY', 'eloquent'));
         match ($dbRepository) {
-            'eloquent' => $this->app->bind(StorageLocationRepositoryInterface::class, fn () => new StorageLocationRepositoryEloquent(new StorageLocationModelEloquent())),
-            'other'    => null,
-        };        
-        
+            DbRepositoryEnum::ELOQUENT => $this->app->bind(StorageLocationRepositoryInterface::class, fn () => new StorageLocationRepositoryEloquent(new StorageLocationModelEloquent())),
+            DbRepositoryEnum::OTHER    => null,
+        };
     }
 
     /**

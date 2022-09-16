@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Modules\Stock\Brand\Repository\Eloquent\Model\BrandModelEloquent;
+use Database\Factories\Modules\Stock\Brand\Repository\BrandFactoryProvider;
 use Tests\TestCase;
 
 class BrandTest extends TestCase
@@ -22,7 +22,7 @@ class BrandTest extends TestCase
      */
     public function testStoreBrandFromBrandController()
     {
-        $brandToStore = BrandModelEloquent::factory()->make()->toArray();
+        $brandToStore = BrandFactoryProvider::make()->generate();
         $response = $this->json(
             "POST",
             $this->uri,
@@ -58,10 +58,10 @@ class BrandTest extends TestCase
      */
     public function testShowBrandFromBrandController()
     {
-        $brandCreated = BrandModelEloquent::factory()->create();
+        $brandCreated = BrandFactoryProvider::make()->create();
         $response = $this->json(
             "GET",
-            "{$this->uri}/{$brandCreated->id}",            
+            "{$this->uri}/{$brandCreated['id']}",            
         );
         $expectedResponse = [
             'code',
@@ -90,14 +90,14 @@ class BrandTest extends TestCase
      */
     public function testUpdateBrandFromBrandController()
     {
-        $brandToUpdate = BrandModelEloquent::factory()->create();
-        $brandToUpdate->name = $this->faker->name();
+        $brandToUpdate = BrandFactoryProvider::make()->create();
+        $brandToUpdate['name'] = $this->faker->name();
 
         $response = $this
             ->json(
                 "PUT",
-                "{$this->uri}/{$brandToUpdate->id}", 
-                $brandToUpdate->toArray(),
+                "{$this->uri}/{$brandToUpdate['id']}", 
+                $brandToUpdate,
             );
         $expectedResponse = [
             'code',
@@ -118,16 +118,16 @@ class BrandTest extends TestCase
             ->assertStatus(200)
             ->assertJsonStructure($expectedResponse);
         $this->assertDatabaseHas('brand', [
-            'id'          => $brandToUpdate['id'],
-            'name'        => $brandToUpdate['name'],
+            'id'   => $brandToUpdate['id'],
+            'name' => $brandToUpdate['name'],
         ]);                
     }
 
     public function testDestroyBrandFromBrandController()
     {
-        $brandCreated  = BrandModelEloquent::factory()->create();
+        $brandCreated = BrandFactoryProvider::make()->create();
         $response = $this->deleteJson(
-            "{$this->uri}/{$brandCreated->id}"
+            "{$this->uri}/{$brandCreated['id']}"
         );
 
         // Checar Status
@@ -136,7 +136,7 @@ class BrandTest extends TestCase
 
     public function testIndexBrandFromBrandController()
     {
-        BrandModelEloquent::factory(10)->create();
+        BrandFactoryProvider::make()->create(15);
         $response = $this
             ->json(
                 "GET",

@@ -2,11 +2,11 @@
 
 namespace App\Modules\General\Person\Repository\Eloquent\Model;
 
-use App\Shared\Repository\Eloquent\ModelEloquentBase;
+use App\Shared\Repository\Eloquent\BaseModelEloquent;
 use App\Shared\Trait\UuidTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class PersonContactModelEloquent extends ModelEloquentBase
+class PersonContactModelEloquent extends BaseModelEloquent
 {
   use HasFactory, UuidTrait;
 

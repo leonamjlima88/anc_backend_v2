@@ -5,6 +5,7 @@ namespace App\Modules\General\State\Provider;
 use App\Modules\General\State\Repository\Eloquent\Model\StateModelEloquent;
 use App\Modules\General\State\Repository\Eloquent\StateRepositoryEloquent;
 use App\Modules\General\State\Repository\StateRepositoryInterface;
+use App\Shared\Repository\Enum\DbRepositoryEnum;
 use Illuminate\Support\ServiceProvider;
 
 class StateServiceProvider extends ServiceProvider
@@ -17,10 +18,10 @@ class StateServiceProvider extends ServiceProvider
     public function register()
     {
         // Instanciar repositório
-        $dbRepository = strtolower(env('DB_REPOSITORY', 'eloquent'));
+        $dbRepository = DbRepositoryEnum::from(env('DB_REPOSITORY', 'eloquent'));
         match ($dbRepository) {
-            'eloquent' => $this->app->bind(StateRepositoryInterface::class, fn () => new StateRepositoryEloquent(new StateModelEloquent())),
-            'other'    => null,
+            DbRepositoryEnum::ELOQUENT => $this->app->bind(StateRepositoryInterface::class, fn () => new StateRepositoryEloquent(new StateModelEloquent())),
+            DbRepositoryEnum::OTHER    => null,
         };     
     }
 

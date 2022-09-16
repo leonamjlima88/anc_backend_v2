@@ -5,6 +5,7 @@ namespace App\Modules\General\Example\Provider;
 use App\Modules\General\Example\Repository\Eloquent\Model\ExampleModelEloquent;
 use App\Modules\General\Example\Repository\Eloquent\ExampleRepositoryEloquent;
 use App\Modules\General\Example\Repository\ExampleRepositoryInterface;
+use App\Shared\Repository\Enum\DbRepositoryEnum;
 use Illuminate\Support\ServiceProvider;
 
 class ExampleServiceProvider extends ServiceProvider
@@ -17,12 +18,11 @@ class ExampleServiceProvider extends ServiceProvider
     public function register()
     {
         // Instanciar repositório
-        $dbRepository = strtolower(env('DB_REPOSITORY', 'eloquent'));
+        $dbRepository = DbRepositoryEnum::from(env('DB_REPOSITORY', 'eloquent'));
         match ($dbRepository) {
-            'eloquent' => $this->app->bind(ExampleRepositoryInterface::class, fn () => new ExampleRepositoryEloquent(new ExampleModelEloquent())),
-            'other'    => null,
+            DbRepositoryEnum::ELOQUENT => $this->app->bind(ExampleRepositoryInterface::class, fn () => new ExampleRepositoryEloquent(new ExampleModelEloquent())),
+            DbRepositoryEnum::OTHER    => null,
         };        
-        
     }
 
     /**
